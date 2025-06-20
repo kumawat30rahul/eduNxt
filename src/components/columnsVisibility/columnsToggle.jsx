@@ -5,7 +5,6 @@ const ColumnsToggle = ({ columns, setColumns }) => {
   const [open, setOpen] = useState(false);
 
   const handleChangeColumns = (columnKey, checked) => {
-    console.log();
     const updatedColumns = columns.map((column) => {
       if (column.key === columnKey) {
         return { ...column, visible: checked };
