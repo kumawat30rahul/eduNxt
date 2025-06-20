@@ -10,3 +10,8 @@ export const getPosts = () => {
   const url = "https://jsonplaceholder.typicode.com/posts";
   return getRequest({ url });
 };
+
+export const getProducts = () => {
+  const url = "https://dummyjson.com/products";
+  return getRequest({ url });
+};

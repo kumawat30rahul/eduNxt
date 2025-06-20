@@ -22,8 +22,9 @@ const PostsList = () => {
   const productColumns = [
     {
       label: "Id",
-      id: "id",
+      key: "id",
       width: 100,
+      sortable: true,
     },
     // {
     //   label: "Sr No.",
@@ -31,12 +32,14 @@ const PostsList = () => {
     // },
     {
       label: "Product Name",
-      id: "productName",
+      key: "productName",
+      sortable: true,
       width: 200,
     },
     {
       label: "Body",
-      id: "body",
+      key: "body",
+      sortable: false,
       width: 300,
     },
   ];

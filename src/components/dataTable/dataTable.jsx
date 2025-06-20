@@ -2,12 +2,13 @@ import { useMemo, useState } from "react";
 
 const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
   const [dataGridState, setDataGridState] = useState({
-    columns: dataGridColumn || [],
     pageSize: pageSize || 10,
     page: 0,
     sortBy: null,
     sortDirection: "asc",
   });
+
+  console.log(dataGridColumn);
 
   const sortedData = useMemo(() => {
     if (!dataGridState.sortBy) return dataGridRow;
@@ -26,6 +27,13 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
     return sortedRows;
   }, [dataGridRow, dataGridState.sortBy, dataGridState.sortDirection]);
 
+  const columns = useMemo(() => {
+    return dataGridColumn.map((column) => ({
+      ...column,
+      visible: column.visible !== false, // Ensure visible is true by default
+    }));
+  }, [dataGridColumn]);
+
   const { page, pageSize: size } = dataGridState;
   const totalPages = Math.ceil(dataGridRow.length / size);
   const start = page * size;
@@ -41,7 +49,8 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
     }
   };
 
-  const handleSort = (columnId) => {
+  const handleSort = (columnId, sortable) => {
+    if (!sortable) return; // If the column is not sortable, do nothing
     setDataGridState((prev) => {
       const isAsc = prev.sortBy === columnId && prev.sortDirection === "asc";
       return {
@@ -57,16 +66,19 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
       <table className="w-full divide-y divide-gray-200 table-fixed">
         <thead className="bg-gray-50">
           <tr>
-            {dataGridState.columns.map((column) => (
+            {columns.map((column) => (
               <th
-                key={column.id}
+                hidden={!column.visible}
+                key={column.key}
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider truncate"
-                style={{ width: column.width ? `${column.width}px` : "auto" }}
-                onClick={() => handleSort(column.id)}
+                style={{
+                  width: column.width ? `${column.width}px` : "auto",
+                }}
+                onClick={() => handleSort(column.key, column.sortable)}
                 role="button"
               >
                 <span>{column.label}</span>
-                {dataGridState.sortBy === column.id && (
+                {dataGridState.sortBy === column.key && (
                   <span className="ml-2">
                     {dataGridState.sortDirection === "asc" ? "↑" : "↓"}
                   </span>
@@ -81,12 +93,13 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
           ) : (
             paginatedRows?.map((row, index) => (
               <tr key={index}>
-                {dataGridState.columns.map((column) => (
+                {columns.map((column) => (
                   <td
-                    key={column.id}
+                    key={column.key}
+                    hidden={!column.visible}
                     className="px-6 py-4 text-sm text-gray-900 truncate"
                   >
-                    {row[column.id]}
+                    {row[column.key]}
                   </td>
                 ))}
               </tr>
