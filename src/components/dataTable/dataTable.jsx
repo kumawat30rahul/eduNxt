@@ -1,4 +1,11 @@
 import { useMemo, useState } from "react";
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+} from "lucide-react";
 
 const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
   const [dataGridState, setDataGridState] = useState({
@@ -7,8 +14,6 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
     sortBy: null,
     sortDirection: "asc",
   });
-
-  console.log(dataGridColumn);
 
   const sortedData = useMemo(() => {
     if (!dataGridState.sortBy) return dataGridRow;
@@ -62,77 +67,148 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
   };
 
   return (
-    <div className="overflow-x-auto w-full rounded-lg">
-      <table className="w-full divide-y divide-gray-200 table-fixed">
-        <thead className="bg-gray-50">
-          <tr>
-            {columns.map((column) => (
-              <th
-                hidden={!column.visible}
-                key={column.key}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider truncate"
-                style={{
-                  width: column.width ? `${column.width}px` : "auto",
-                }}
-                onClick={() => handleSort(column.key, column.sortable)}
-                role="button"
-              >
-                <span>{column.label}</span>
-                {dataGridState.sortBy === column.key && (
-                  <span className="ml-2">
-                    {dataGridState.sortDirection === "asc" ? "↑" : "↓"}
-                  </span>
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            paginatedRows?.map((row, index) => (
-              <tr key={index}>
-                {columns.map((column) => (
-                  <td
-                    key={column.key}
-                    hidden={!column.visible}
-                    className="px-6 py-4 text-sm text-gray-900 truncate"
-                  >
-                    {row[column.key]}
-                  </td>
-                ))}
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full divide-y divide-gray-200 table-fixed">
+          <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+            <tr>
+              {columns.map((column) => (
+                <th
+                  hidden={!column.visible}
+                  key={column.key}
+                  className={`px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider truncate ${
+                    column.sortable
+                      ? "cursor-pointer hover:bg-gray-200 transition-colors duration-150 select-none"
+                      : ""
+                  }`}
+                  style={{
+                    width: column.width ? `${column.width}px` : "auto",
+                  }}
+                  onClick={() => handleSort(column.key, column.sortable)}
+                  role="button"
+                >
+                  <div className="flex items-center gap-2">
+                    <span>{column.label}</span>
+                    {column.sortable && (
+                      <div className="flex flex-col">
+                        {dataGridState.sortBy === column.key ? (
+                          dataGridState.sortDirection === "asc" ? (
+                            <ChevronUp className="w-4 h-4 text-blue-500" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-blue-500" />
+                          )
+                        ) : (
+                          <div className="w-4 h-4 flex flex-col justify-center opacity-30">
+                            <ChevronUp className="w-3 h-2 -mb-1" />
+                            <ChevronDown className="w-3 h-2" />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-100">
+            {loading ? (
+              <tr>
+                <td colSpan={columns.length} className="px-6 py-12 text-center">
+                  <div className="flex items-center justify-center gap-3 text-gray-500">
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                    <span className="text-sm font-medium">Loading...</span>
+                  </div>
+                </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : paginatedRows.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={columns.length}
+                  className="px-6 py-12 text-center text-gray-500"
+                >
+                  <div className="text-sm">No data available</div>
+                </td>
+              </tr>
+            ) : (
+              paginatedRows?.map((row, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-gray-50 transition-colors duration-150"
+                >
+                  {columns.map((column) => (
+                    <td
+                      key={column.key}
+                      hidden={!column.visible}
+                      className="px-6 py-4 text-sm text-gray-900 truncate"
+                    >
+                      {row[column.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
-      <div className="flex justify-between">
-        <select
-          value={size}
-          onChange={(e) => {
-            setDataGridState((prev) => ({
-              ...prev,
-              pageSize: Number(e.target.value),
-              page: 0, // reset to page 0
-            }));
-          }}
-          className="mt-4 p-2 border border-gray-300 rounded"
-        >
-          {[5, 10, 20, 50].map((s) => (
-            <option key={s} value={s}>
-              Show {s} rows
-            </option>
-          ))}
-        </select>
+      <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-gray-700">
+            Rows per page:
+          </label>
+          <select
+            value={size}
+            onChange={(e) => {
+              setDataGridState((prev) => ({
+                ...prev,
+                pageSize: Number(e.target.value),
+                page: 0, // reset to page 0
+              }));
+            }}
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 transition-all duration-200"
+          >
+            {[5, 10, 20, 50].map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <div className="flex items-center justify-between gap-2">
-          <p className="mt-4 text-sm text-gray-600">
-            Page {page + 1} of {totalPages} ({dataGridRow.length} total rows)
-          </p>
-          <button onClick={() => handlePagination("prev")}>Prev</button>
-          <button onClick={() => handlePagination("next")}>Next</button>
+        <div className="flex items-center justify-between sm:justify-end gap-4">
+          <div className="text-sm text-gray-600">
+            <span className="font-medium">
+              {start + 1}-{Math.min(end, dataGridRow.length)}
+            </span>{" "}
+            of <span className="font-medium">{dataGridRow.length}</span> results
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => handlePagination("prev")}
+              disabled={page === 0}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </button>
+
+            <div className="flex items-center gap-1 mx-2">
+              <span className="text-sm text-gray-600">
+                Page <span className="font-medium">{page + 1}</span> of{" "}
+                <span className="font-medium">{totalPages}</span>
+              </span>
+            </div>
+
+            <button
+              onClick={() => handlePagination("next")}
+              disabled={page >= totalPages - 1}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
