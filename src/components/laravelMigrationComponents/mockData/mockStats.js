@@ -1,0 +1,38 @@
+export const mockStats = [
+  {
+    title: "Total Revenue",
+    week: 45678,
+    month: 80000,
+    quarter: 100000,
+    change: 12.5,
+    trend: "positive",
+    icon: "dollar-sign",
+  },
+  {
+    title: "Active Users",
+    week: 1234,
+    month: 2345,
+    quarter: 6000,
+    change: -2.3,
+    trend: "negative",
+    icon: "users",
+  },
+  {
+    title: "Orders",
+    week: 567,
+    month: 1000,
+    quarter: 4500,
+    change: 8.7,
+    trend: "positive",
+    icon: "shopping-cart",
+  },
+  {
+    title: "Conversion Rate",
+    week: 3.24,
+    month: 5.7,
+    quarter: 12.5,
+    change: 1.2,
+    trend: "positive",
+    icon: "chart-line",
+  },
+];

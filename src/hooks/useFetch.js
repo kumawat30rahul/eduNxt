@@ -4,6 +4,7 @@ export const useFetch = (serviceFunction, params) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refetch, setRefetch] = useState(null);
   const useFetchRef = useRef();
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export const useFetch = (serviceFunction, params) => {
     };
 
     fetchData();
-  }, [serviceFunction, params]);
+  }, [serviceFunction, params, refetch]);
 
-  return { data, error, loading };
+  return { data, error, loading, setRefetch };
 };
