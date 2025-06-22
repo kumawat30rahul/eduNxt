@@ -8,7 +8,15 @@ import {
 } from "lucide-react";
 import Pagination from "../pagination/pagination";
 
-const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
+const DataTable = ({
+  dataGridColumn,
+  dataGridRow = [],
+  pageSize,
+  loading,
+  pagination = false,
+  error,
+  searchedText,
+}) => {
   const [dataGridState, setDataGridState] = useState({
     pageSize: pageSize || 10,
     page: 0,
@@ -67,8 +75,23 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
     });
   };
 
+  const handleColorSearchedText = (stringData) => {
+    if (!searchedText) return stringData;
+    const regex = new RegExp(`(${searchedText})`, "gi");
+    const parts = String(stringData).split(regex);
+    return parts?.map((part, index) =>
+      part.toLowerCase() === searchedText.toLowerCase() ? (
+        <span key={index} className="text-blue-500">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-gray-200 table-fixed">
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
@@ -77,9 +100,9 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
                 <th
                   hidden={!column.visible}
                   key={column.key}
-                  className={`px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider truncate ${
+                  className={`px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider truncate bg-blue-500/40 ${
                     column.sortable
-                      ? "cursor-pointer hover:bg-gray-200 transition-colors duration-150 select-none"
+                      ? "cursor-pointer hover:bg-blue-500 transition-colors duration-150 select-none"
                       : ""
                   }`}
                   style={{
@@ -89,14 +112,14 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
                   role="button"
                 >
                   <div className="flex items-center gap-2">
-                    <span>{column.label}</span>
+                    <span className="text-md font-bold">{column.label}</span>
                     {column.sortable && (
                       <div className="flex flex-col">
                         {dataGridState.sortBy === column.key ? (
                           dataGridState.sortDirection === "asc" ? (
-                            <ChevronUp className="w-4 h-4 text-blue-500" />
+                            <ChevronUp className="w-4 h-4 text-black" />
                           ) : (
-                            <ChevronDown className="w-4 h-4 text-blue-500" />
+                            <ChevronDown className="w-4 h-4 text-black" />
                           )
                         ) : (
                           <div className="w-4 h-4 flex flex-col justify-center opacity-30">
@@ -111,13 +134,23 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
+          <tbody className="bg-white divide-y divide-gray-100 h-20 overflow-x-scroll">
             {loading ? (
               <tr>
                 <td colSpan={columns.length} className="px-6 py-12 text-center">
                   <div className="flex items-center justify-center gap-3 text-gray-500">
                     <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
                     <span className="text-sm font-medium">Loading...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={columns.length} className="px-6 py-12 text-center">
+                  <div className="flex items-center justify-center gap-3 text-gray-500">
+                    <span className="text-sm font-medium">
+                      Something Went Wrong while retreiving data
+                    </span>
                   </div>
                 </td>
               </tr>
@@ -142,7 +175,9 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
                       hidden={!column.visible}
                       className="px-6 py-4 text-sm text-gray-900 truncate"
                     >
-                      {row[column.key]}
+                      {column.renderCell
+                        ? column.renderCell(row)
+                        : handleColorSearchedText(row[column.key])}
                     </td>
                   ))}
                 </tr>
@@ -151,16 +186,18 @@ const DataTable = ({ dataGridColumn, dataGridRow = [], pageSize, loading }) => {
           </tbody>
         </table>
       </div>
-      <Pagination
-        setDataGridState={setDataGridState}
-        handlePagination={handlePagination}
-        dataGridRow={dataGridRow}
-        size={size}
-        start={start}
-        end={end}
-        page={page}
-        totalPages={totalPages}
-      />
+      {pagination && (
+        <Pagination
+          setDataGridState={setDataGridState}
+          handlePagination={handlePagination}
+          dataGridRow={dataGridRow}
+          size={size}
+          start={start}
+          end={end}
+          page={page}
+          totalPages={totalPages}
+        />
+      )}
     </div>
   );
 };

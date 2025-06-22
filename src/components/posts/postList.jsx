@@ -7,10 +7,9 @@ const PostsList = () => {
   const { data, error, loading } = useFetch(getPosts);
   const rows = useMemo(
     () =>
-      data?.map((item, index) => {
+      data?.map((item) => {
         return {
           id: item?.id,
-          // srNo: index + 1,
           productName: item?.title,
           userId: item?.userId,
           body: item?.body,
@@ -23,21 +22,17 @@ const PostsList = () => {
     {
       label: "Id",
       key: "id",
-      width: 100,
+      width: 50,
       sortable: true,
     },
-    // {
-    //   label: "Sr No.",
-    //   id: "srNo",
-    // },
     {
       label: "Product Name",
       key: "productName",
       sortable: true,
-      width: 200,
+      width: 150,
     },
     {
-      label: "Body",
+      label: "Description",
       key: "body",
       sortable: false,
       width: 300,
@@ -50,6 +45,7 @@ const PostsList = () => {
         dataGridColumn={productColumns}
         dataGridRow={rows || []}
         loading={loading}
+        error={error}
       />
     </div>
   );

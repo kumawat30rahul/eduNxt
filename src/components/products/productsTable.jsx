@@ -10,7 +10,7 @@ const productColumns = [
   {
     label: "Id",
     key: "id",
-    width: 100,
+    width: 80,
     sortable: true,
     filterable: true,
     exportable: true,
@@ -21,21 +21,57 @@ const productColumns = [
   //   id: "srNo",
   // },
   {
+    label: "Image",
+    key: "image",
+    sortable: true,
+    width: 100,
+    filterable: true,
+    exportable: true,
+    visible: true,
+    renderCell: (row) => {
+      return (
+        <div className="flex items-center">
+          <img
+            src={row.image}
+            alt={row.title}
+            className="h-16 aspect-square object-cover rounded"
+          />
+        </div>
+      );
+    },
+  },
+  {
     label: "Product Name",
     key: "title",
     sortable: true,
-    width: 200,
-    sortable: true,
+    width: 300,
     filterable: true,
     exportable: true,
     visible: true,
   },
   {
-    label: "Body",
-    key: "body",
+    label: "Brand",
+    key: "brand",
     sortable: false,
-    width: 300,
+    width: 200,
+    filterable: true,
+    exportable: true,
+    visible: true,
+  },
+  {
+    label: "Category",
+    key: "category",
+    sortable: false,
+    width: 100,
+    filterable: true,
+    exportable: true,
+    visible: true,
+  },
+  {
+    label: "Price",
+    key: "price",
     sortable: true,
+    width: 80,
     filterable: true,
     exportable: true,
     visible: true,
@@ -77,24 +113,33 @@ const ProductsTable = () => {
             key: item?.id,
             // srNo: index + 1,
             title: item?.title,
-            body: item?.description,
+            brand: item?.brand,
+            category: item?.category,
+            price: item?.price,
+            image: item?.images?.[0] || "", // Assuming images is an array and we take the first image
+            id: item?.id,
           };
         })
         .filter(Boolean), // Filter out null values
     [data, textSearch]
   );
 
-  console.log("Rows:", rows);
-
   return (
     <div className="w-full p-4">
-      <ColumnVisibilityToggle columns={columns} setColumns={setColumns} />
-      <SearchFilter setTextSearch={setTextSearch} />
-      <ExportButton type={"json"} rows={rows} columns={columns} />
+      <div className="flex flex-col lg:flex-row items-start justify-between mb-4">
+        <div className="flex flex-col lg:flex-row items-center gap-4">
+          <ColumnVisibilityToggle columns={columns} setColumns={setColumns} />
+          <ExportButton type={"json"} rows={rows} columns={columns} />
+          <ExportButton type={"csv"} rows={rows} columns={columns} />
+        </div>
+        <SearchFilter setTextSearch={setTextSearch} />
+      </div>
       <DataTable
         dataGridColumn={columns}
         dataGridRow={rows || []}
         loading={loading}
+        pagination={true}
+        searchedText={textSearch}
       />
     </div>
   );
