@@ -1,8 +1,8 @@
 import { useState } from "react";
 import BackButton from "../components/backButton/BackButton";
 import CommentsTable from "../components/commentsTable/CommentsTable";
-import CommonButton from "../components/commonButton/commonButton";
-import ProductsTable from "../components/products/productsTable.jsx";
+import ProductsTable from "../components/products/productsTable";
+import CommonButton from "../components/commonButton/CommonButton";
 
 const TaskTwo = () => {
   const [selectedTab, setSelectedTab] = useState("products");
