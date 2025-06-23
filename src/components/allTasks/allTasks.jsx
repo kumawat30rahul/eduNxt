@@ -24,7 +24,7 @@ const AllTasks = () => {
     {
       label: "Task 4",
       value: "task4",
-      route: "",
+      route: "https://edu-nxt-task4.vercel.app/",
       description: "Beautiful Modern Dashboard Creation",
     },
   ];
@@ -44,7 +44,12 @@ const AllTasks = () => {
         backdrop-blur-md bg-white/10 border border-white/20 shadow-lg
         flex flex-col justify-between p-4
         hover:bg-white/20 hover:shadow-xl hover:scale-101`}
-            onClick={() => navigate(item.route)}
+            onClick={() => {
+              if (item.value === "task4") {
+                return window.open(item.route, "_blank");
+              }
+              navigate(item.route);
+            }}
           >
             <div>
               <h2 className="text-xl font-semibold text-white">
@@ -56,7 +61,15 @@ const AllTasks = () => {
           </div>
         ))}
       </div>
-      <div></div>
+      <div className="mt-2 pl-5">
+        <span className="text-2xl font-bold">Note</span>
+        <ul className="list-disc">
+          <li className="ml-5">Click on task to get to that task</li>
+          <li className="ml-5">
+            Task 4 has been created as seperate react app
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };
