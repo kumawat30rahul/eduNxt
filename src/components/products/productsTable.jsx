@@ -2,8 +2,8 @@ import { useMemo, useState } from "react";
 import { getProducts } from "../../config/services/services";
 import { useFetch } from "../../hooks/useFetch";
 import { isItemMatchingSearch } from "../commonFunctions/itemSearch";
-import DataTable from "../dataTable/DataTable";
 import Tools from "../tools/Tools";
+import DataTable from "../dataTable/DataTable";
 
 const productColumns = [
   {

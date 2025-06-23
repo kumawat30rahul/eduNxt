@@ -24,8 +24,8 @@ const TaskTwo = () => {
         />
       </div>
       <div>
-        {selectedTab === "products" && <ProductsTable />}
         {selectedTab === "comments" && <CommentsTable />}
+        {selectedTab === "products" && <ProductsTable />}
       </div>
     </div>
   );
