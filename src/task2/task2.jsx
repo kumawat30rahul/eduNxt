@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BackButton from "../components/backButton/BackButton";
 import CommentsTable from "../components/commentsTable/CommentsTable";
-import ProductsTable from "../components/products/productsTable";
+import ProductsTable from "../components/products/ProductsTable";
 import CommonButton from "../components/commonButton/CommonButton";
 
 const TaskTwo = () => {
