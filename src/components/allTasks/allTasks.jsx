@@ -24,7 +24,7 @@ const AllTasks = () => {
     {
       label: "Task 4",
       value: "task4",
-      route: "https://edu-nxt-task4.vercel.app/",
+      route: "https://edunxt-task-4.vercel.app/",
       description: "Beautiful Modern Dashboard Creation",
     },
   ];
