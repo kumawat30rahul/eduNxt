@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import { getPosts, getUsers } from "../../config/services/services";
+import { useMemo } from "react";
+import { getUsers } from "../../config/services/services";
 import { useFetch } from "../../hooks/useFetch";
 import DataTable from "../dataTable/dataTable";
 
 const UsersList = () => {
   const { data, error, loading } = useFetch(getUsers);
-  console.log("data", data);
   const rows = useMemo(
     () =>
       data?.map((item, index) => {
@@ -15,6 +14,8 @@ const UsersList = () => {
           name: item?.name,
           userId: item?.userId,
           userName: item?.username,
+          phone: item?.phone,
+          email: item?.email,
           website: item?.website,
         };
       }),
@@ -45,6 +46,18 @@ const UsersList = () => {
       width: 200,
     },
     {
+      label: "Phone",
+      key: "phone",
+      sortable: true,
+      width: 200,
+    },
+    {
+      label: "Email",
+      key: "email",
+      sortable: true,
+      width: 200,
+    },
+    {
       label: "Website",
       key: "website",
       sortable: false,
@@ -53,12 +66,13 @@ const UsersList = () => {
   ];
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full">
       <DataTable
         dataGridColumn={userColumns}
         dataGridRow={rows || []}
         loading={loading}
         pagination={false}
+        error={error}
       />
     </div>
   );

@@ -1,13 +1,13 @@
 import { useState } from "react";
+import CommonButton from "../components/commonButton/commonButton";
 import PostsList from "../components/posts/postList";
 import UsersList from "../components/users/userList";
-import CommonButton from "../components/commonButton/commonButton";
 
 const TaskOne = () => {
   const [selectedTab, setSelectedTab] = useState("posts");
   return (
-    <div>
-      <div className="flex gap-3 pl-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-3">
         <CommonButton
           label={"Posts"}
           value={"posts"}
@@ -22,18 +22,13 @@ const TaskOne = () => {
         />
       </div>
       <div>
-        {selectedTab === "posts" && (
-          <div>
-            {/* Here you would render the posts component */}
-            <PostsList />
-          </div>
-        )}
-        {selectedTab === "users" && (
-          <div>
-            <UsersList />
-            {/* Here you would render the users component */}
-          </div>
-        )}
+        <span className="text-7xl font-bold">
+          {selectedTab === "posts" ? "Posts" : "Users"}
+        </span>
+      </div>
+      <div>
+        {selectedTab === "posts" && <PostsList />}
+        {selectedTab === "users" && <UsersList />}
       </div>
     </div>
   );

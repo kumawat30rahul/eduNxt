@@ -11,7 +11,7 @@ const Pagination = ({
   totalPages,
 }) => {
   return (
-    <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="h-15 px-6 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 absolute right-0 left-0 bottom-0">
       <div className="flex items-center gap-2">
         <label className="text-sm font-medium text-gray-700">
           Rows per page:
@@ -25,7 +25,7 @@ const Pagination = ({
               page: 0, // reset to page 0
             }));
           }}
-          className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 transition-all duration-200"
+          className="text-black px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 transition-all duration-200"
         >
           {[5, 10, 20, 50].map((s) => (
             <option key={s} value={s}>

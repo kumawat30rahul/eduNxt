@@ -2,6 +2,7 @@ import { useState } from "react";
 import UsersList from "../components/users/userList";
 import ProductsTable from "../components/products/productsTable";
 import CommonButton from "../components/commonButton/commonButton";
+import CommentsTable from "../components/CommentsTable";
 
 const TaskTwo = () => {
   const [selectedTab, setSelectedTab] = useState("products");
@@ -22,16 +23,8 @@ const TaskTwo = () => {
         />
       </div>
       <div>
-        {selectedTab === "products" && (
-          <div>
-            <ProductsTable />
-          </div>
-        )}
-        {selectedTab === "comments" && (
-          <div>
-            <UsersList />
-          </div>
-        )}
+        {selectedTab === "products" && <ProductsTable />}
+        {selectedTab === "comments" && <CommentsTable />}
       </div>
     </div>
   );

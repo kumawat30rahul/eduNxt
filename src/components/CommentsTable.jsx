@@ -1,49 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
-import { getProducts } from "../../config/services/services";
-import { useFetch } from "../../hooks/useFetch";
-import DataTable from "../dataTable/dataTable";
-import ColumnVisibilityToggle from "../columnsVisibility/columnsToggle";
-import SearchFilter from "../searchFilter/searchFilter";
-import ExportButton from "../exportButton/exportButton";
-import Tools from "../Tools";
+import { useMemo, useState } from "react";
+import { getComments } from "../config/services/services";
+import { useFetch } from "../hooks/useFetch";
+import ExportButton from "./exportButton/exportButton";
+import SearchFilter from "./searchFilter/searchFilter";
+import DataTable from "./dataTable/dataTable";
+import ColumnVisibilityToggle from "./columnsVisibility/columnsToggle";
+import Tools from "./Tools";
 
-const productColumns = [
+const commentsColumns = [
   {
     label: "Id",
     key: "id",
     width: 80,
     sortable: true,
-    filterable: true,
+    filterable: false,
     exportable: true,
     visible: true,
   },
-  // {
-  //   label: "Sr No.",
-  //   id: "srNo",
-  // },
   {
-    label: "Image",
-    key: "image",
-    sortable: true,
-    width: 100,
-    filterable: true,
-    exportable: true,
-    visible: true,
-    renderCell: (row) => {
-      return (
-        <div className="flex items-center">
-          <img
-            src={row.image}
-            alt={row.title}
-            className="h-16 aspect-square object-cover rounded"
-          />
-        </div>
-      );
-    },
-  },
-  {
-    label: "Product Name",
-    key: "title",
+    label: "Comments",
+    key: "comment",
     sortable: true,
     width: 300,
     filterable: true,
@@ -51,26 +27,35 @@ const productColumns = [
     visible: true,
   },
   {
-    label: "Brand",
-    key: "brand",
-    sortable: false,
-    width: 200,
+    label: "Likes",
+    key: "like",
+    sortable: true,
+    width: 80,
+    filterable: false,
+    exportable: true,
+    visible: true,
+  },
+  {
+    label: "User's Fullname",
+    key: "userFullName",
+    sortable: true,
+    width: 150,
     filterable: true,
     exportable: true,
     visible: true,
   },
   {
-    label: "Category",
-    key: "category",
-    sortable: false,
-    width: 100,
+    label: "User's Username",
+    key: "username",
+    sortable: true,
+    width: 150,
     filterable: true,
     exportable: true,
     visible: true,
   },
   {
-    label: "Price",
-    key: "price",
+    label: "Post Id",
+    key: "postId",
     sortable: true,
     width: 80,
     filterable: true,
@@ -79,20 +64,20 @@ const productColumns = [
   },
 ];
 
-const ProductsTable = () => {
-  const { data, error, loading } = useFetch(getProducts);
+const CommentsTable = () => {
+  const { data, error, loading } = useFetch(getComments);
   const persistedColumns = localStorage.getItem("columnsVisibility");
   const persistedColumnsData = persistedColumns
     ? JSON.parse(persistedColumns)
     : null;
   const [columns, setColumns] = useState(
-    persistedColumnsData ? persistedColumnsData : productColumns
+    persistedColumnsData ? persistedColumnsData : commentsColumns
   );
   const [textSearch, setTextSearch] = useState("");
 
   const rows = useMemo(
     () =>
-      data?.products
+      data?.comments
         ?.map((item, index) => {
           if (textSearch) {
             if (textSearch) {
@@ -105,28 +90,27 @@ const ProductsTable = () => {
                 .includes(searchText);
 
               if (!titleMatch && !descriptionMatch) {
-                return null; // Skip this item if it doesn't match the search
+                return null;
               }
             }
           }
 
           return {
             key: item?.id,
-            // srNo: index + 1,
-            title: item?.title,
-            brand: item?.brand,
-            category: item?.category,
-            price: item?.price,
-            image: item?.images?.[0] || "", // Assuming images is an array and we take the first image
+            comment: item?.body,
+            like: item?.likes,
+            userFullName: item?.user?.fullName,
+            username: item?.user?.username,
+            postId: item?.postId,
             id: item?.id,
           };
         })
-        .filter(Boolean), // Filter out null values
+        .filter(Boolean),
     [data, textSearch]
   );
 
   return (
-    <div className="w-full p-4 ">
+    <div className="w-full p-4">
       <Tools
         columns={columns}
         rows={rows}
@@ -139,9 +123,10 @@ const ProductsTable = () => {
         loading={loading}
         pagination={true}
         searchedText={textSearch}
+        error={error}
       />
     </div>
   );
 };
 
-export default ProductsTable;
+export default CommentsTable;

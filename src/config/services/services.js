@@ -25,6 +25,11 @@ export const getProducts = () => {
   return getRequest({ url });
 };
 
+export const getComments = () => {
+  const url = "https://dummyjson.com/comments";
+  return getRequest({ url });
+};
+
 export const getActivites = () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {

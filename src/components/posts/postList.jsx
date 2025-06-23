@@ -10,7 +10,7 @@ const PostsList = () => {
       data?.map((item) => {
         return {
           id: item?.id,
-          productName: item?.title,
+          postTitle: item?.title,
           userId: item?.userId,
           body: item?.body,
         };
@@ -26,8 +26,14 @@ const PostsList = () => {
       sortable: true,
     },
     {
-      label: "Product Name",
-      key: "productName",
+      label: "User Id",
+      key: "userId",
+      width: 50,
+      sortable: true,
+    },
+    {
+      label: "Post Title",
+      key: "postTitle",
       sortable: true,
       width: 150,
     },
@@ -35,12 +41,12 @@ const PostsList = () => {
       label: "Description",
       key: "body",
       sortable: false,
-      width: 300,
+      width: 200,
     },
   ];
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full">
       <DataTable
         dataGridColumn={productColumns}
         dataGridRow={rows || []}

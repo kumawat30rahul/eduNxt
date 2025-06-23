@@ -7,12 +7,14 @@ import {
   AlertCircle,
   X,
 } from "lucide-react";
+import CommonButton from "../commonButton/commonButton";
 
-const ExportButton = ({ type, rows, columns }) => {
+const ExportButton = ({ rows, columns }) => {
   const [openFileNameModal, setOpenFileNameModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportStatus, setExportStatus] = useState(null); // 'success' | 'error' | null
   const [fileName, setFileName] = useState("");
+  const [type, setSelectType] = useState("csv");
 
   const getIcon = () => {
     switch (type) {
@@ -25,14 +27,15 @@ const ExportButton = ({ type, rows, columns }) => {
     }
   };
 
-  const getButtonStyle = () => {
-    if (exportStatus === "success") {
-      return "bg-green-500 hover:bg-green-600 border-green-500";
-    }
-    if (exportStatus === "error") {
-      return "bg-red-500 hover:bg-red-600 border-red-500";
-    }
-    return "bg-blue-500 hover:bg-blue-600 border-blue-500";
+  const exportFunction = (blob, finalFileName) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = finalFileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const handleExport = async (customFileName) => {
@@ -41,37 +44,18 @@ const ExportButton = ({ type, rows, columns }) => {
     setOpenFileNameModal(false);
 
     try {
-      // Add a small delay to show loading state
       await new Promise((resolve) => setTimeout(resolve, 500));
-
       const finalFileName = customFileName || `data.${type}`;
-
       if (type === "csv") {
-        // Logic to export data as CSV
         const csvContent = rows
           .map((row) => columns.map((col) => row[col.key] || "").join(","))
           .join("\n");
         const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = finalFileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        exportFunction(blob, finalFileName);
       } else if (type === "json") {
-        // Logic to export data as JSON
         const jsonData = JSON.stringify(rows, null, 2);
         const blob = new Blob([jsonData], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = finalFileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        exportFunction(blob, finalFileName);
       } else {
         throw new Error("Unsupported export type");
       }
@@ -79,7 +63,6 @@ const ExportButton = ({ type, rows, columns }) => {
       setExportStatus("success");
       setTimeout(() => setExportStatus(null), 2000);
     } catch (error) {
-      console.error("Export failed:", error);
       setExportStatus("error");
       setTimeout(() => setExportStatus(null), 3000);
     } finally {
@@ -97,42 +80,6 @@ const ExportButton = ({ type, rows, columns }) => {
     handleExport(finalFileName);
   };
 
-  const getButtonContent = () => {
-    if (isExporting) {
-      return (
-        <>
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          <span>Exporting...</span>
-        </>
-      );
-    }
-
-    if (exportStatus === "success") {
-      return (
-        <>
-          <Check className="w-4 h-4" />
-          <span>Exported!</span>
-        </>
-      );
-    }
-
-    if (exportStatus === "error") {
-      return (
-        <>
-          <AlertCircle className="w-4 h-4" />
-          <span>Export Failed</span>
-        </>
-      );
-    }
-
-    return (
-      <>
-        {getIcon()}
-        <span>Export as {type.toUpperCase()}</span>
-      </>
-    );
-  };
-
   return (
     <>
       {/* Modal Backdrop */}
@@ -148,6 +95,26 @@ const ExportButton = ({ type, rows, columns }) => {
                 className="w-8 h-8 text-red-500 cursor-pointer hover:text-gray-500 rounded-full bg-gray-200/20 hover:bg-gray-200 p-1"
                 onClick={() => setOpenFileNameModal(false)}
               />
+            </div>
+            <div className="flex gap-2">
+              <CommonButton
+                lable="CSV"
+                value="csv"
+                onClick={() => setSelectType("csv")}
+                isSelected={type}
+                className="text-black hover:text-white"
+              >
+                CSV
+              </CommonButton>
+              <CommonButton
+                lable="JSON"
+                value="json"
+                onClick={() => setSelectType("json")}
+                isSelected={type}
+                className="text-black hover:text-white"
+              >
+                JSON
+              </CommonButton>
             </div>
 
             {/* Modal Body */}
@@ -184,19 +151,19 @@ const ExportButton = ({ type, rows, columns }) => {
 
             {/* Modal Footer */}
             <div className="flex gap-3 bg-gray-50 rounded-b-xl">
-              <button
+              <CommonButton
                 onClick={() => setOpenFileNameModal(false)}
-                className="flex-1 px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                className="flex-1 px-4 py-2.5 text-black bg-red-400 border border-gray-300 rounded-lg hover:bg-red-600 transition-colors font-medium"
               >
                 Cancel
-              </button>
-              <button
+              </CommonButton>
+              <CommonButton
                 onClick={handleSave}
                 className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2"
               >
                 {getIcon()}
                 Export
-              </button>
+              </CommonButton>
             </div>
           </div>
         </div>
@@ -204,18 +171,12 @@ const ExportButton = ({ type, rows, columns }) => {
 
       {/* Export Button */}
       <div>
-        <button
+        <CommonButton
           onClick={() => setOpenFileNameModal(true)}
           disabled={isExporting}
-          className={`
-          flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-white 
-          border transition-all duration-200 shadow-sm hover:shadow-md transform cursor-pointer
-          ${getButtonStyle()}
-          ${type === "csv" ? "focus:ring-green-500" : "focus:ring-blue-500"}
-        `}
         >
-          {getButtonContent()}
-        </button>
+          Export
+        </CommonButton>
       </div>
     </>
   );
