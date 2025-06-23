@@ -1,14 +1,17 @@
 import { useState } from "react";
 import UsersList from "../components/users/userList";
-import ProductsTable from "../components/products/productsTable";
-import CommonButton from "../components/commonButton/commonButton";
-import CommentsTable from "../components/CommentsTable";
+import ProductsTable from "../components/products/ProductsTable";
+import CommonButton from "../components/commonButton/CommonButton";
+import CommentsTable from "../components/commentsTable/CommentsTable";
+import { ArrowLeftCircle } from "lucide-react";
+import BackButton from "../components/backButton/BackButton";
 
 const TaskTwo = () => {
   const [selectedTab, setSelectedTab] = useState("products");
   return (
     <div>
-      <div className="flex gap-3 pl-4">
+      <div className="flex gap-3 pl-4 items-center">
+        <BackButton />
         <CommonButton
           label="Products"
           value="products"

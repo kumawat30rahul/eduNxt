@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { getUsers } from "../../config/services/services";
 import { useFetch } from "../../hooks/useFetch";
-import DataTable from "../dataTable/dataTable";
+import DataTable from "../dataTable/DataTable";
 
 const UsersList = () => {
   const { data, error, loading } = useFetch(getUsers);

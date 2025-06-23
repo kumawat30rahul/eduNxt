@@ -12,6 +12,7 @@ import DateRangePicker from "./DateRangePicker";
 import StatCard from "./StatCard";
 import "./laravel.css";
 import SkeletonLoader from "../skeletonLoader";
+import BackButton from "../backButton/BackButton";
 
 const AnalyticsDashboard = () => {
   const [period, setPeriod] = useState("week");
@@ -163,6 +164,7 @@ const AnalyticsDashboard = () => {
 
   return (
     <div className="analytics-dashboard">
+      <BackButton />
       <div className="dashboard-header">
         <h1>Analytics Overview</h1>
         <DateRangePicker value={period} onChange={handlePeriodChange} />

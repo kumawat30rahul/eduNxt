@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import Pagination from "../pagination/pagination";
+import Pagination from "../pagination/Pagination";
 
 const DataTable = ({
   dataGridColumn,
@@ -86,7 +86,7 @@ const DataTable = ({
 
   return (
     <div className="bg-white rounded-xl shadow-sm  h-[600px] overflow-hidden relative">
-      <div className={`overflow-x-auto h-full ${pagination ? "pb-15" : ""}`}>
+      <div className={`overflow-y-auto h-full ${pagination ? "pb-15" : ""}`}>
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100 sticky top-0">
             <tr className="sticky top-0">
@@ -100,7 +100,9 @@ const DataTable = ({
                       : ""
                   }`}
                   style={{
-                    width: column?.width ? `${column?.width}px` : "auto",
+                    width: column?.width
+                      ? `${column?.width}px !important`
+                      : "auto",
                   }}
                   onClick={() => handleSort(column?.key, column?.sortable)}
                   role="button"

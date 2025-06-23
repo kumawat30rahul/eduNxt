@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { getProducts } from "../../config/services/services";
 import { useFetch } from "../../hooks/useFetch";
-import DataTable from "../dataTable/dataTable";
-import ColumnVisibilityToggle from "../columnsVisibility/columnsToggle";
-import SearchFilter from "../searchFilter/searchFilter";
-import ExportButton from "../exportButton/exportButton";
-import Tools from "../Tools";
+import { isItemMatchingSearch } from "../commonFunctions/itemSearch";
+import DataTable from "../dataTable/DataTable";
+import Tools from "../tools/Tools";
 
 const productColumns = [
   {
@@ -17,10 +15,7 @@ const productColumns = [
     exportable: true,
     visible: true,
   },
-  // {
-  //   label: "Sr No.",
-  //   id: "srNo",
-  // },
+
   {
     label: "Image",
     key: "image",
@@ -94,21 +89,7 @@ const ProductsTable = () => {
     () =>
       data?.products
         ?.map((item, index) => {
-          if (textSearch) {
-            if (textSearch) {
-              const searchText = textSearch.toLowerCase();
-              const titleMatch = item?.title
-                ?.toLowerCase()
-                .includes(searchText);
-              const descriptionMatch = item?.description
-                ?.toLowerCase()
-                .includes(searchText);
-
-              if (!titleMatch && !descriptionMatch) {
-                return null; // Skip this item if it doesn't match the search
-              }
-            }
-          }
+          if (!isItemMatchingSearch(item, textSearch, columns)) return null;
 
           return {
             key: item?.id,

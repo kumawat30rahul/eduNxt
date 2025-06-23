@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { getPosts } from "../../config/services/services";
 import { useFetch } from "../../hooks/useFetch";
-import DataTable from "../dataTable/dataTable";
+import DataTable from "../dataTable/DataTable";
 
 const PostsList = () => {
   const { data, error, loading } = useFetch(getPosts);
@@ -12,7 +12,7 @@ const PostsList = () => {
           id: item?.id,
           postTitle: item?.title,
           userId: item?.userId,
-          body: item?.body,
+          body: item?.body?.slice(0, 50) + "...",
         };
       }),
     [data]
@@ -41,7 +41,7 @@ const PostsList = () => {
       label: "Description",
       key: "body",
       sortable: false,
-      width: 200,
+      width: 100,
     },
   ];
 

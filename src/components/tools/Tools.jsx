@@ -1,6 +1,6 @@
-import ExportButton from "./exportButton/exportButton";
-import SearchFilter from "./searchFilter/searchFilter";
-import ColumnVisibilityToggle from "./columnsVisibility/columnsToggle";
+import ExportButton from "../exportButton/ExportButton";
+import SearchFilter from "../searchFilter/SearchFilter";
+import ColumnVisibilityToggle from "../columnsVisibility/ColumnVisibilityToggle";
 
 const Tools = ({ columns, setColumns, rows, setTextSearch }) => {
   return (

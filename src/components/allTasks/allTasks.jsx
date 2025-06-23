@@ -40,7 +40,7 @@ const AllTasks = () => {
       <div className="flex pl-1 flex-col sm:flex-row sm:w-full">
         {taskButtons?.map((item) => (
           <div
-            className={`w-80 h-auto m-3 rounded-xl cursor-pointer transition-all duration-300
+            className={`w-80 h-80 m-3 rounded-xl cursor-pointer transition-all duration-300
         backdrop-blur-md bg-white/10 border border-white/20 shadow-lg
         flex flex-col justify-between p-4
         hover:bg-white/20 hover:shadow-xl hover:scale-101`}
@@ -56,6 +56,7 @@ const AllTasks = () => {
           </div>
         ))}
       </div>
+      <div></div>
     </div>
   );
 };
