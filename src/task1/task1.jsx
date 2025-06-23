@@ -1,8 +1,7 @@
 import { useState } from "react";
-import PostsList from "../components/posts/postList";
-import UsersList from "../components/users/userList";
 import BackButton from "../components/backButton/BackButton";
-import CommonButton from "../components/commonButton/commonButton";
+import UsersList from "../components/users/UsersList";
+import PostsList from "../components/posts/PostsList";
 
 const TaskOne = () => {
   const [selectedTab, setSelectedTab] = useState("users");
